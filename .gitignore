@@ -3,6 +3,7 @@ data/
 bow/
 lda/
 tf-idf/
+word2vec/
 
 .DS_Store
 .AppleDouble
