@@ -1,5 +1,7 @@
 data/
 .ipynb_checkpoints/
+bow/
+lda/
 
 .DS_Store
 .AppleDouble
