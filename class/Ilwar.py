@@ -102,13 +102,14 @@ from sklearn import preprocessing
 import pickle
 
 class TrollClassifier:
-    def __init__(self, path):
-        self.train_path = path
     def set_train_path(self, path):
+    def fit(self, path):
         self.train_path = path
-    def fit(self):
+
         file_list = glob.glob("%s/*.json" % self.train_path)
+
         shuffle(file_list)
+
         json_train=[]
 
         for json_file_name in file_list:
@@ -163,8 +164,7 @@ class TrollClassifier:
         
         print("fit complete")
 
-    def save_model(self):
-        save_path = "predict_model"
+    def save_model(self, save_path = "predict_model"):
 
         if not os.path.exists(save_path):
             os.makedirs(save_path)
@@ -174,9 +174,7 @@ class TrollClassifier:
         pickle.dump(self.text_model, open("%s/text_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.model, open("%s/predict_model.p" % save_path,"wb"), protocol = pickle.HIGHEST_PROTOCOL)
 
-    def load_model(self):
-        save_path = "predict_model"
-
+    def load_model(self, save_path = "predict_model"):
         self.author_model = pickle.load(open("%s/author_model.p" % save_path, "rb"))
         self.title_model = pickle.load(open("%s/title_model.p" % save_path, "rb"))
         self.text_model = pickle.load(open("%s/text_model.p" % save_path, "rb"))
@@ -220,6 +218,16 @@ class TrollClassifier:
         pre = test.columns.drop(['author_pos', 'author_pos_sentences','title_pos', 'title_pos_sentences','text_pos', 'text_pos_sentences'])
         
         result = self.model.predict_proba(test[pre])
+        #result=0
+        
+        return result
+
+
+# In[ ]:
+
+
+
+e])
         #result=0
         
         return result

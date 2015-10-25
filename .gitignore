@@ -6,6 +6,8 @@ tf-idf/
 word2vec/
 predict_model/
 hasher/
+forum/
+tag_counter/
 
 .DS_Store
 .AppleDouble
