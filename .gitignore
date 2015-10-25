@@ -5,6 +5,7 @@ lda/
 tf-idf/
 word2vec/
 predict_model/
+hasher/
 
 .DS_Store
 .AppleDouble
