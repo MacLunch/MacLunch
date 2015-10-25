@@ -4,6 +4,9 @@ bow/
 lda/
 tf-idf/
 word2vec/
+predict_model/
+hasher/
+tag_counter/
 
 .DS_Store
 .AppleDouble
