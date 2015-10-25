@@ -179,6 +179,21 @@ class TrollClassifier:
         self.title_model = pickle.load(open("%s/title_model.p" % save_path, "rb"))
         self.text_model = pickle.load(open("%s/text_model.p" % save_path, "rb"))
         self.model = pickle.load(open("%s/predict_model.p" % save_path,"rb"))
+
+    def predict(self, test):
+        #le = preprocessing.LabelEncoder()
+        #test["forumid"] = le.fit_transform(test["forumid"])
+
+        test = make_word2vec(test, "author_pos", 600, self.author_model)
+        test = make_bag_of_words(test, 500, "title_pos_sentences", self.title_model)
+        test = make_bag_of_words(test, 500, "text_pos_sentences", self.text_model)
+
+        pre = test.columns.drop(['author_pos', 'author_pos_sentences','title_pos', 'title_pos_sentences','text_pos', 'text_pos_sentences'])
+        
+        result = self.model.predict_proba(test[pre])
+        #result=0
+        
+        return result
         
     def predict_file(self, path):
         json_file = json.loads(open(path).read())
