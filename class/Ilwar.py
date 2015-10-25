@@ -99,7 +99,7 @@ from random import shuffle
 from bs4 import BeautifulSoup as bs
 from sklearn import preprocessing
 
-class Ilwar:
+class TrollClassifier:
     def __init__(self, path):
         self.train_path = path
     def set_train_path(self, path):
