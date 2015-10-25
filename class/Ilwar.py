@@ -95,9 +95,11 @@ import pandas as pd
 import json
 import jpype
 import glob
+import os
 from random import shuffle
 from bs4 import BeautifulSoup as bs
 from sklearn import preprocessing
+import pickle
 
 class TrollClassifier:
     def __init__(self, path):
@@ -160,6 +162,25 @@ class TrollClassifier:
         self.model.fit(labeled_train[pre],labeled_train[label])
         
         print("fit complete")
+
+    def save_model(self):
+        save_path = "predict_model"
+
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
+        pickle.dump(self.author_model, open("%s/author_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.title_model, open("%s/title_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.text_model, open("%s/text_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.model, open("%s/predict_model.p" % save_path,"wb"), protocol = pickle.HIGHEST_PROTOCOL)
+
+    def load_model(self):
+        save_path = "predict_model"
+
+        self.author_model = pickle.load(open("%s/author_model.p" % save_path, "rb"))
+        self.title_model = pickle.load(open("%s/title_model.p" % save_path, "rb"))
+        self.text_model = pickle.load(open("%s/text_model.p" % save_path, "rb"))
+        self.model = pickle.load(open("%s/predict_model.p" % save_path,"rb"))
         
     def predict_file(self, path):
         json_file = json.loads(open(path).read())
