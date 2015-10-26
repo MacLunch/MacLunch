@@ -4,87 +4,93 @@
 # In[1]:
 from sklearn.feature_extraction.text import CountVectorizer
 
-def make_bag_of_words(labeled_train, max_features, col_name, vectorizer):
-    
-    train_data_features = vectorizer.transform(labeled_train[col_name]).toarray()
+class BagOfWordsVectorizer:
+    def transform(self, dataframe, col_name):
+        data_features = self.vectorizer.transform(dataframe).toarray()
 
-    col = ["bow_%s_%s" % (col_name, data) for data in vectorizer.get_feature_names()]
-    df_bow = pd.DataFrame(train_data_features, columns = col, index=labeled_train.index)
-    
-    labeled_train = pd.concat([labeled_train, df_bow],axis=1)
-    
-    return labeled_train
+        col = ["bow_%s_%s" % (col_name, data) for data in self.vectorizer.get_feature_names()]
+        df_bow = pd.DataFrame(data_features, columns = col, index=dataframe.index)
+
+        return df_bow
 
 
-def fit_bag_of_words(labeled_train, max_features, col_name):
-    vectorizer = CountVectorizer(analyzer = "word", tokenizer = None, preprocessor = None,
-                                stop_words = None, max_features=max_features)
-    vectorizer.fit(labeled_train[col_name])
-        
-    return vectorizer
+    def fit(self, train, max_features):
+        self.vectorizer = CountVectorizer(analyzer = "word", tokenizer = None, preprocessor = None,\
+                                    stop_words = None, max_features=max_features)
+
+        self.vectorizer.fit(train)
+
+    def get_vectorizer(self):
+        return self.vectorizer
+
+    def set_vectorizer(self, vectorizer):
+        self.vectorizer = vectorizer
 
 # In[3]:
 
 from gensim.models import word2vec
 
-def make_feature_vec(words, model, num_features):
-    
-    feature_vec = np.zeros((num_features,), dtype = "float32")
-    
-    nwords = 0
-    
-    index2word_set = set(model.index2word)
-    
-    for word in words:
-        if word in index2word_set:
-            nwords = nwords + 1.
-            feature_vec = np.add(feature_vec, model[word])
-    
-    if nwords != 0:
-        feature_vec = np.divide(feature_vec, nwords)
-    
-    return feature_vec
-
-def get_avg_feature_vecs(texts, model, num_features):
-    
-    counter = 0
-    
-    text_feature_vecs = np.zeros((len(texts), num_features), dtype = "float32")
-    
-    for i, text in enumerate(texts):
+class Word2VecModel:
+    def make_feature_vec(self, words, model, num_features):
+        feature_vec = np.zeros((num_features,), dtype = "float32")
         
-        if i % 10000 == 0:
-            print(i)
+        nwords = 0
         
-        text_feature_vecs[i] = make_feature_vec(text , model, num_features)
+        index2word_set = set(model.index2word)
         
-    return text_feature_vecs
+        for word in words:
+            if word in index2word_set:
+                nwords = nwords + 1.
+                feature_vec = np.add(feature_vec, model[word])
+        
+        if nwords != 0:
+            feature_vec = np.divide(feature_vec, nwords)
+        
+        return feature_vec
 
-def fit_word2vec(train, col_name, max_features):
-    num_features = max_features
-    min_word_count = 40
-    num_workers = -1
-    context = 40
-    downsampling = 1e-3
+    def get_avg_feature_vecs(self, texts, model, num_features):
+        counter = 0
+        
+        text_feature_vecs = np.zeros((len(texts), num_features), dtype = "float32")
+        
+        for i, text in enumerate(texts):
+            
+            if i % 10000 == 0:
+                print(i)
+            
+            text_feature_vecs[i] = self.make_feature_vec(text , model, num_features)
+            
+        return text_feature_vecs
 
-    sentences = " ".join(train[col_name].apply(lambda x:" ".join(x)))
+    def fit(self, train, max_features):
+        min_word_count = 40
+        num_workers = -1
+        context = 40
+        downsampling = 1e-3
 
-    min_word_count = min(min_word_count, len(train[col_name]))
-    context = min(context, len(train[col_name]))
+        min_word_count = min(min_word_count, len(train))
+        context = min(context, len(train))
 
-    model = word2vec.Word2Vec(sentences, workers = num_workers, size = num_features,                             min_count = min_word_count, window = context, sample = downsampling)
+        sentences = train.apply(lambda x:" ".join(x))
 
-    return model
+        self.model = word2vec.Word2Vec(sentences, workers = num_workers, size = max_features, \
+                                min_count = min_word_count, window = context, sample = downsampling)
+        self.max_features = max_features
 
-def make_word2vec(train, col_name, max_features, model):
-    col = ["word2vec_%s_%d" % (col_name, data) for data in range(0, max_features)]
-    
-    train_feature = get_avg_feature_vecs(train[col_name].apply(lambda x:" ".join(x)), model, max_features)
-    train_feature = pd.DataFrame(train_feature, index = train.index, columns = col)
-    
-    train = pd.concat([train, train_feature], axis = 1)
-    
-    return train
+    def transform(self, dataframe, col_name):
+        col = ["word2vec_%s_%d" % (col_name, data) for data in range(0, self.max_features)]
+        
+        df_word2vec = self.get_avg_feature_vecs(dataframe, self.model, self.max_features)
+        df_word2vec = pd.DataFrame(df_word2vec, index = dataframe.index, columns = col)
+        
+        return df_word2vec
+
+    def get_model(self):
+        return self.model
+
+    def set_model(self, model):
+        self.model = model
+        self.max_features = model.syn0.shape[1]
 
 # In[6]:
 
@@ -103,24 +109,14 @@ import pickle
 
 class TrollClassifier:
     def set_train_path(self, path):
-    def fit(self, path):
         self.train_path = path
 
-        file_list = glob.glob("%s/*.json" % self.train_path)
-
-        shuffle(file_list)
-
-        json_train=[]
-
-        for json_file_name in file_list:
-            json_file = json.loads(open(json_file_name).read())
-            json_train += json_file["articles"]
-    
+    def pre_process(self, json, istrain):
         mecab = Mecab()
 
-        labeled_train = []
+        data = []
 
-        for cnt, article in enumerate(json_train):
+        for cnt, article in enumerate(json):
             if cnt % 10000 == 0:
                 print(cnt)
                 
@@ -129,8 +125,7 @@ class TrollClassifier:
             author_pos = ["%s_%s" % (word, pos) for word, pos in mecab.pos(article["author"])]
             text_pos = ["%s_%s" % (first, second) for first, second in mecab.pos(text)]
 
-            labeled_train.append({
-                "istroll": article["is_troll"],
+            data.append({
                 "title_pos": title_pos,
                 "title_pos_sentences" : " ".join(title_pos),
                 "author_pos": author_pos,
@@ -141,28 +136,44 @@ class TrollClassifier:
                 "pk": article["pk"]
             })
 
-        labeled_train = pd.DataFrame.from_dict(labeled_train)
-        labeled_train = labeled_train.set_index('pk')
-        
-        self.author_model = fit_word2vec(labeled_train, "author_pos", 600)
-        self.title_model = fit_bag_of_words(labeled_train, 500, "title_pos_sentences")
-        self.text_model = fit_bag_of_words(labeled_train, 500, "text_pos_sentences")
+            if istrain == True:
+                data[cnt]["istroll"] = article["is_troll"]
 
-        labeled_train = make_word2vec(labeled_train, "author_pos", 600, self.author_model)
-        labeled_train = make_bag_of_words(labeled_train, 500, "title_pos_sentences", self.title_model)
-        labeled_train = make_bag_of_words(labeled_train, 500, "text_pos_sentences", self.text_model)
+        data = pd.DataFrame.from_dict(data)
+        data = data.set_index('pk')
+
+        return data
+
+    def fit(self, json_train, n_estimators = 10):
+
+        train = self.pre_process(json_train, istrain = True)
+        
+        bow_vectorizer = BagOfWordsVectorizer()
+        word2vec_model = Word2VecModel()
+
+        word2vec_model.fit(train["author_pos_sentences"], 500)
+        author_features = word2vec_model.transform(train["author_pos_sentences"], "author")
+        self.author_model = word2vec_model.get_model()
+
+        bow_vectorizer.fit(train["title_pos_sentences"], 1000)
+        title_features = bow_vectorizer.transform(train["title_pos_sentences"], "title")
+        self.title_model = bow_vectorizer.get_vectorizer()
+
+        bow_vectorizer.fit(train["text_pos_sentences"], 1000)
+        text_features = bow_vectorizer.transform(train["text_pos_sentences"], "text")
+        self.text_model = bow_vectorizer.get_vectorizer()
+
+        train = pd.concat([train, author_features, title_features, text_features], axis = 1)
 
         le = preprocessing.LabelEncoder()
 
-        labeled_train["forumid"] = le.fit_transform(labeled_train["forumid"])
+        train["forumid"] = le.fit_transform(train["forumid"])
         
         label = 'istroll'
-        pre = labeled_train.columns.drop(['author_pos', 'author_pos_sentences'                                          ,'title_pos', 'title_pos_sentences',                                          'text_pos', 'text_pos_sentences', label])
+        pre = train.columns.drop(['author_pos', 'author_pos_sentences','title_pos', 'title_pos_sentences','text_pos', 'text_pos_sentences', label])
         
-        self.model = RandomForestClassifier(n_estimators=10, n_jobs=-1)
-        self.model.fit(labeled_train[pre],labeled_train[label])
-        
-        print("fit complete")
+        self.model = RandomForestClassifier(n_estimators, n_jobs=-1)
+        self.model.fit(train[pre], train[label])
 
     def save_model(self, save_path = "predict_model"):
 
@@ -179,51 +190,47 @@ class TrollClassifier:
         self.title_model = pickle.load(open("%s/title_model.p" % save_path, "rb"))
         self.text_model = pickle.load(open("%s/text_model.p" % save_path, "rb"))
         self.model = pickle.load(open("%s/predict_model.p" % save_path,"rb"))
-        
-    def predict_file(self, path):
-        json_file = json.loads(open(path).read())
-        json_test = json_file["articles"]
-        
-        mecab = Mecab()
-        test = []
-        article = json_test[1]
 
-        text = bs(article["text"], "html.parser").text
-        title_pos = ["%s_%s" % (word, pos) for word, pos in mecab.pos(article["title"])]
-        author_pos = ["%s_%s" % (word, pos) for word, pos in mecab.pos(article["author"])]
-        text_pos = ["%s_%s" % (first, second) for first, second in mecab.pos(text)]
+    def _predict(self, json_test):
         
-        test.append({
-            "title_pos": title_pos,
-            "title_pos_sentences" : " ".join(title_pos),
-            "author_pos": author_pos,
-            "author_pos_sentences" : " ".join(author_pos),
-            "text_pos": text_pos,
-            "text_pos_sentences" : " ".join(text_pos),
-            "forumid": article["forumid"],                    
-            "pk": article["pk"]
-        })
-        
-        test = pd.DataFrame(test)
-        test = test.set_index("pk")
+        test = self.pre_process(json_test, istrain = False)
+
+        bow_vectorizer = BagOfWordsVectorizer()
+        word2vec_model = Word2VecModel()
+
+        word2vec_model.set_model(self.author_model)
+        author_features = word2vec_model.transform(test["author_pos_sentences"], "author")
+
+        bow_vectorizer.set_vectorizer(self.title_model)
+        title_features = bow_vectorizer.transform(test["title_pos_sentences"], "title")
+
+        bow_vectorizer.set_vectorizer(self.text_model)
+        text_features = bow_vectorizer.transform(test["text_pos_sentences"], "text")
+
+        test = pd.concat([test, author_features, title_features, text_features], axis = 1)
 
         le = preprocessing.LabelEncoder()
 
         test["forumid"] = le.fit_transform(test["forumid"])
 
-        test = make_word2vec(test, "author_pos", 600, self.author_model)
-        test = make_bag_of_words(test, 500, "title_pos_sentences", self.title_model)
-        test = make_bag_of_words(test, 500, "text_pos_sentences", self.text_model)
-
         pre = test.columns.drop(['author_pos', 'author_pos_sentences','title_pos', 'title_pos_sentences','text_pos', 'text_pos_sentences'])
+
+        return test[pre]
+
         
-        result = self.model.predict_proba(test[pre])
-        #result=0
+    def predict(self, json_test):
+        result = self.model.predict(self._predict(json_test))
         
         return result
 
+    def predict_proba(self, json_test):
+        result = self.model.predict_proba(self._predict(json_test)).T
 
-# In[ ]:
+        #만약 전부 False거나 전부 True가 나오면 result가 False, True 확률이 각가 나오는 것이 아닌
+        #둘 중 하나만 나와서 에러가 나옴.
 
-
+        if result.shape[0] < 2:
+            return result[0]
+        else:
+            return result[1]
 
