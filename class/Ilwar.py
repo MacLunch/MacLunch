@@ -11,6 +11,9 @@ from bs4 import BeautifulSoup as bs
 from sklearn import preprocessing
 import pickle
 
+from Word2VecModel import Word2VecModel
+from BagOfWordsVectorizer import BagOfWordsVectorizer
+
 class TrollClassifier:
     def set_train_path(self, path):
         self.train_path = path
