@@ -11,8 +11,13 @@ from bs4 import BeautifulSoup as bs
 from sklearn import preprocessing
 import pickle
 
+from JsonUtil import JsonUtil
+from DictVectorizerModel import DictVectorizerModel
 from Word2VecModel import Word2VecModel
 from BagOfWordsVectorizer import BagOfWordsVectorizer
+from FeatureHasherModel import FeatureHasherModel
+from LDAModel import LDAModel
+from TagCounterModel import TagCounterModel
 
 class TrollClassifier:
     def set_train_path(self, path):
