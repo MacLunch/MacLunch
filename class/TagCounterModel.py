@@ -13,7 +13,7 @@ class TagCounterModel:
         num_df = len(dataframe)
 
         tag_list = []
-        for i, text in enumerate(dataframe):
+        for text in dataframe:
             tags = {}
 
             soup = bs(text, 'html.parser')
@@ -23,7 +23,8 @@ class TagCounterModel:
 
                 if tag_name not in tags:
                     tags[tag_name] = 0
-                    tags[tag_name] += 1
+
+                tags[tag_name] += 1
 
             tag_list.append(tags)
 
