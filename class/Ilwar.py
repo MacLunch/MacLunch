@@ -9,6 +9,7 @@ import os
 from random import shuffle
 from bs4 import BeautifulSoup as bs
 from sklearn import preprocessing
+from xgboost.sklearn import XGBClassifier
 import pickle
 
 from JsonUtil import JsonUtil
@@ -42,6 +43,7 @@ class TrollClassifier:
                 "title_pos_sentences" : " ".join(title_pos),
                 "author_pos": author_pos,
                 "author_pos_sentences" : " ".join(author_pos),
+                "text":article["text"],
                 "text_pos": text_pos,
                 "text_pos_sentences" : " ".join(text_pos),
                 "forumid": article["forumid"],                    
@@ -56,16 +58,17 @@ class TrollClassifier:
 
         return data
 
-    def fit(self, json_train, n_estimators = 10):
+    def fit(self, json_train, n_estimators = 10, is_xgb = True):
 
         train = self.pre_process(json_train, istrain = True)
         
         bow_vectorizer = BagOfWordsVectorizer()
         word2vec_model = Word2VecModel()
+        tag_counter_model = TagCounterModel()
 
-        word2vec_model.fit(train["author_pos_sentences"], 500)
-        author_features = word2vec_model.transform(train["author_pos_sentences"], "author")
-        self.author_model = word2vec_model.get_model()
+        # word2vec_model.fit(train["author_pos_sentences"], 500)
+        # author_features = word2vec_model.transform(train["author_pos_sentences"], "author")
+        # self.author_model = word2vec_model.get_model()
 
         bow_vectorizer.fit(train["title_pos_sentences"], 1000)
         title_features = bow_vectorizer.transform(train["title_pos_sentences"], "title")
@@ -75,32 +78,44 @@ class TrollClassifier:
         text_features = bow_vectorizer.transform(train["text_pos_sentences"], "text")
         self.text_model = bow_vectorizer.get_vectorizer()
 
-        train = pd.concat([train, author_features, title_features, text_features], axis = 1)
+        tag_features = tag_counter_model.fit_transform(train["text"])
+        self.tag_model = tag_counter_model.get_col()
+
+        train = pd.concat([train, title_features, text_features, tag_features], axis = 1)
 
         le = preprocessing.LabelEncoder()
 
         train["forumid"] = le.fit_transform(train["forumid"])
         
-        label = 'istroll'
-        pre = train.columns.drop(['author_pos', 'author_pos_sentences','title_pos', 'title_pos_sentences','text_pos', 'text_pos_sentences', label])
+        label = train['istroll']
+        train = train.drop('istroll', axis=1)
+        train = train.drop(['author_pos', 'author_pos_sentences','title_pos', 'title_pos_sentences','text', 'text_pos', 'text_pos_sentences'], axis=1)
+
+        train.columns = [str(x) for x in range(len(train.columns))]
         
-        self.model = RandomForestClassifier(n_estimators, n_jobs=-1)
-        self.model.fit(train[pre], train[label])
+        if is_xgb == False:
+            self.model = RandomForestClassifier(n_estimators, n_jobs=-1)
+        else:
+            self.model = XGBClassifier(n_estimators = n_estimators)
+
+        self.model.fit(train, label)
 
     def save_model(self, save_path = "predict_model"):
 
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
-        pickle.dump(self.author_model, open("%s/author_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
+        #pickle.dump(self.author_model, open("%s/author_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.title_model, open("%s/title_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.text_model, open("%s/text_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.tag_model, open("%s/tag_model.p" % save_path,"wb"), protocol = pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.model, open("%s/predict_model.p" % save_path,"wb"), protocol = pickle.HIGHEST_PROTOCOL)
 
     def load_model(self, save_path = "predict_model"):
-        self.author_model = pickle.load(open("%s/author_model.p" % save_path, "rb"))
+        #self.author_model = pickle.load(open("%s/author_model.p" % save_path, "rb"))
         self.title_model = pickle.load(open("%s/title_model.p" % save_path, "rb"))
         self.text_model = pickle.load(open("%s/text_model.p" % save_path, "rb"))
+        self.tag_model = pickle.load(open("%s/tag_model.p" % save_path, "rb"))
         self.model = pickle.load(open("%s/predict_model.p" % save_path,"rb"))
 
     def _predict(self, json_test):
@@ -109,9 +124,10 @@ class TrollClassifier:
 
         bow_vectorizer = BagOfWordsVectorizer()
         word2vec_model = Word2VecModel()
+        tag_counter_model = TagCounterModel()
 
-        word2vec_model.set_model(self.author_model)
-        author_features = word2vec_model.transform(test["author_pos_sentences"], "author")
+        # word2vec_model.set_model(self.author_model)
+        # author_features = word2vec_model.transform(test["author_pos_sentences"], "author")
 
         bow_vectorizer.set_vectorizer(self.title_model)
         title_features = bow_vectorizer.transform(test["title_pos_sentences"], "title")
@@ -119,15 +135,20 @@ class TrollClassifier:
         bow_vectorizer.set_vectorizer(self.text_model)
         text_features = bow_vectorizer.transform(test["text_pos_sentences"], "text")
 
-        test = pd.concat([test, author_features, title_features, text_features], axis = 1)
+        tag_counter_model.set_col(self.tag_model)
+        tag_features = tag_counter_model.transform(test["text"])
+
+        test = pd.concat([test, title_features, text_features, tag_features], axis = 1)
 
         le = preprocessing.LabelEncoder()
 
         test["forumid"] = le.fit_transform(test["forumid"])
 
-        pre = test.columns.drop(['author_pos', 'author_pos_sentences','title_pos', 'title_pos_sentences','text_pos', 'text_pos_sentences'])
+        test = test.drop(['author_pos', 'author_pos_sentences','title_pos', 'title_pos_sentences', 'text', 'text_pos', 'text_pos_sentences'], axis=1)
 
-        return test[pre]
+        test.columns = [str(x) for x in range(len(test.columns))]
+
+        return test
 
         
     def predict(self, json_test):
@@ -138,8 +159,7 @@ class TrollClassifier:
     def predict_proba(self, json_test):
         result = self.model.predict_proba(self._predict(json_test)).T
 
-        #만약 전부 False거나 전부 True가 나오면 result가 False, True 확률이 각가 나오는 것이 아닌
-        #둘 중 하나만 나와서 에러가 나옴.
+        #if results are all False, it's not 2-dimensional so return only first col
 
         if result.shape[0] < 2:
             return result[0]
