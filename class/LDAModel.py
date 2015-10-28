@@ -7,42 +7,40 @@ from nltk.corpus import stopwords
 from optparse import OptionParser
 
 class LDAModel:
-    def fit(self, train, keep_n, num_topics):
+  def fit(self, train, keep_n, num_topics):
+    dictionary = corpora.Dictionary(train)
 
-        dictionary = corpora.Dictionary(train)
+    dictionary.filter_extremes(keep_n=keep_n)
 
-        dictionary.filter_extremes(keep_n=keep_n)
+    corpus = [dictionary.doc2bow(text) for text in train]
 
-        corpus = [dictionary.doc2bow(text) for text in train]
+    self.model = gensim.models.ldamodel.LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics, chunksize=1000, passes=1)
 
-        self.model = gensim.models.ldamodel.LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics, chunksize=1000, passes=1)
+  def transform(self, dataframe, keep_n, col_name):
+    dictionary = corpora.Dictionary(dataframe)
 
-    def transform(self, dataframe, keep_n, col_name):
+    dictionary.filter_extremes(keep_n=keep_n)
 
-        dictionary = corpora.Dictionary(dataframe)
+    corpus = [dictionary.doc2bow(text) for text in dataframe]
 
-        dictionary.filter_extremes(keep_n=keep_n)
-
-        corpus = [dictionary.doc2bow(text) for text in dataframe]
-
-        num = len(dataframe)
-        df = []
+    num = len(dataframe)
+    df = []
+    
+    for i in range(0,num):
+        if i % 10000 == 0:
+            print(i)
         
-        for i in range(0,num):
-            if i % 10000 == 0:
-                print(i)
-            
-            temp = [i[1] for i in self.model.get_document_topics(corpus[i],minimum_probability=0)]
-            df.append(temp)
-        
-        col = ["lda_%s_%d" % (col_name, data) for data in range(0, self.model.num_topics)]
-        df = pd.DataFrame(df, columns = col)
-        df.index = dataframe.index
+        temp = [i[1] for i in self.model.get_document_topics(corpus[i],minimum_probability=0)]
+        df.append(temp)
+    
+    col = ["lda_%s_%d" % (col_name, data) for data in range(0, self.model.num_topics)]
+    df = pd.DataFrame(df, columns = col)
+    df.index = dataframe.index
 
-        return df
+    return df
 
-    def get_model(self):
-        return self.model
+  def get_model(self):
+    return self.model
 
-    def set_model(self, model):
-        self.model = model
+  def set_model(self, model):
+    self.model = model

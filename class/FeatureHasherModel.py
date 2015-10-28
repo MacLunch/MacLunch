@@ -11,6 +11,7 @@ class FeatureHasherModel:
 
 		df = pd.DataFrame(hashed.toarray())
 		df.columns = ["%s_%d" % (col_name, author_num) for author_num in range(0, self.model.n_features)]
+		df.index = dataframe.index
 
 		return df
 
