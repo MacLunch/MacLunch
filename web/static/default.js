@@ -1,5 +1,5 @@
 function initButtonClick(){
-	$('button#submit').click(function(){
+	$('button#submit').on('click', function(){
 		var json_data = {
 			pk : $('input[name="pk"]').val(),
 			author : $('input[name="author"]').val(),
@@ -8,8 +8,6 @@ function initButtonClick(){
 			text : $('input[name="text"]').val(),
 			url : $('input[name="url"]').val()
 		}
-
-		console.log(json_data);
 
 		$.ajax({
 			type:'POST',
