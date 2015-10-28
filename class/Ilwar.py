@@ -65,10 +65,15 @@ class TrollClassifier:
         bow_vectorizer = BagOfWordsVectorizer()
         word2vec_model = Word2VecModel()
         tag_counter_model = TagCounterModel()
+        feature_hasher_model = FeatureHasherModel()
 
         # word2vec_model.fit(train["author_pos_sentences"], 500)
         # author_features = word2vec_model.transform(train["author_pos_sentences"], "author")
         # self.author_model = word2vec_model.get_model()
+
+        feature_hasher_model.fit(1000)
+        author_features = feature_hasher_model.transform(train["author_pos"], "author")
+        self.author_model = feature_hasher_model.get_model()
 
         bow_vectorizer.fit(train["title_pos_sentences"], 1000)
         title_features = bow_vectorizer.transform(train["title_pos_sentences"], "title")
@@ -81,7 +86,7 @@ class TrollClassifier:
         tag_features = tag_counter_model.fit_transform(train["text"])
         self.tag_model = tag_counter_model.get_col()
 
-        train = pd.concat([train, title_features, text_features, tag_features], axis = 1)
+        train = pd.concat([train, author_features, title_features, text_features, tag_features], axis = 1)
 
         le = preprocessing.LabelEncoder()
 
@@ -89,7 +94,7 @@ class TrollClassifier:
         
         label = train['istroll']
         train = train.drop('istroll', axis=1)
-        train = train.drop(['author_pos', 'author_pos_sentences','title_pos', 'title_pos_sentences','text', 'text_pos', 'text_pos_sentences'], axis=1)
+        train = train.drop(['author_pos', 'author_pos_sentences', 'title_pos', 'title_pos_sentences','text', 'text_pos', 'text_pos_sentences'], axis=1)
 
         train.columns = [str(x) for x in range(len(train.columns))]
         
@@ -105,14 +110,14 @@ class TrollClassifier:
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
-        #pickle.dump(self.author_model, open("%s/author_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.author_model, open("%s/author_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.title_model, open("%s/title_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.text_model, open("%s/text_model.p" % save_path, "wb"), protocol = pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.tag_model, open("%s/tag_model.p" % save_path,"wb"), protocol = pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.model, open("%s/predict_model.p" % save_path,"wb"), protocol = pickle.HIGHEST_PROTOCOL)
 
     def load_model(self, save_path = "predict_model"):
-        #self.author_model = pickle.load(open("%s/author_model.p" % save_path, "rb"))
+        self.author_model = pickle.load(open("%s/author_model.p" % save_path, "rb"))
         self.title_model = pickle.load(open("%s/title_model.p" % save_path, "rb"))
         self.text_model = pickle.load(open("%s/text_model.p" % save_path, "rb"))
         self.tag_model = pickle.load(open("%s/tag_model.p" % save_path, "rb"))
@@ -125,9 +130,13 @@ class TrollClassifier:
         bow_vectorizer = BagOfWordsVectorizer()
         word2vec_model = Word2VecModel()
         tag_counter_model = TagCounterModel()
+        feature_hasher_model = FeatureHasherModel()
 
         # word2vec_model.set_model(self.author_model)
         # author_features = word2vec_model.transform(test["author_pos_sentences"], "author")
+
+        feature_hasher_model.set_model(self.author_model)
+        author_features = feature_hasher_model.transform(test["author_pos"], "author")
 
         bow_vectorizer.set_vectorizer(self.title_model)
         title_features = bow_vectorizer.transform(test["title_pos_sentences"], "title")
@@ -138,7 +147,7 @@ class TrollClassifier:
         tag_counter_model.set_col(self.tag_model)
         tag_features = tag_counter_model.transform(test["text"])
 
-        test = pd.concat([test, title_features, text_features, tag_features], axis = 1)
+        test = pd.concat([test, author_features, title_features, text_features, tag_features], axis = 1)
 
         le = preprocessing.LabelEncoder()
 
