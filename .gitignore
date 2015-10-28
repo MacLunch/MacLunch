@@ -8,6 +8,7 @@ predict_model/
 hasher/
 forum/
 tag_counter/
+class/__pycache__
 
 .DS_Store
 .AppleDouble
