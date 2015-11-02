@@ -16,15 +16,15 @@ def load_model():
 def make_input(data):
 	return [data]
 
-@app.route('/test')
+@app.route('/')
 def test_():
 	return render_template("test.html")
 
-@app.route('/')
+@app.route('/test')
 def home():
 	return render_template("index.html")
 
-@app.route('/query', methods = ['POST'])
+@app.route('/api/query', methods = ['POST'])
 def test():
 	data = request.data.decode('utf-8')
 	input_data = make_input(json.loads(data))
