@@ -1,15 +1,10 @@
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup as bs
-from html.parser import HTMLParser as hp
-import html
-import copy
 
 
-#text가 bs로 파싱되어있지 않아야 되는데, 저희 쪽에선 이미 파싱되서 들어오므로 쓸지 안쓸지는 모르겠네영
-#일단 만들어두긴 합니다
 class TagCounterModel:
-  def get_tag(self, dataframe):
+  def get_tag(self, dataframe, is_tf = False):
     num_df = len(dataframe)
 
     tag_list = []
@@ -18,18 +13,52 @@ class TagCounterModel:
 
         soup = bs(text, 'html.parser')
 
-        for tag in soup.find_all():
-            tag_name = 'TAG_' + tag.name
+        soup_col = [tag.name for tag in soup.find_all()]
 
-            if tag_name not in tags:
+        if is_tf == False:
+          for tag in soup.find_all():
+              tag_name = 'TAG_' + tag.name
+
+              if tag_name not in tags:
+                  tags[tag_name] = 0
+
+              tags[tag_name] += 1
+
+          tag_list.append(tags)
+        else:
+          for tag in self.tag_col:
+              tag_name = 'TAG_' + tag
+
+              if tag_name not in tags:
                 tags[tag_name] = 0
 
-            tags[tag_name] += 1
+              if tag in soup_col:
+                tags[tag_name] += 1
 
-        tag_list.append(tags)
+          tag_list.append(tags)
 
     df = pd.DataFrame.from_dict(tag_list)
     df = df.fillna(0)
     df.index = dataframe.index
 
     return df
+
+  def fit_transform(self, dataframe):
+    df = self.get_tag(dataframe)
+    self.tag_col = df.columns
+
+    return df
+
+  def fit(self, dataframe):
+    df = self.get_tag(dataframe)
+    self.tag_col = df.columns
+
+  def transform(self, dataframe):
+    df = self.get_tag(dataframe, is_tf = True)
+    return df
+
+  def get_col(self):
+    return self.tag_col
+
+  def set_col(self, columns):
+    self.tag_col = columns
