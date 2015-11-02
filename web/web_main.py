@@ -16,6 +16,10 @@ def load_model():
 def make_input(data):
 	return [data]
 
+@app.route('/test')
+def test_():
+	return render_template("test.html")
+
 @app.route('/')
 def home():
 	return render_template("index.html")
