@@ -126,6 +126,7 @@
 
 #landing-page #team-desc {
 	text-align: center;
+	margin-bottom: 100px;
 }
 
 #landing-page #address {
@@ -177,5 +178,61 @@
 
 #map {
 	width: 100%;
-	height: 400px;
+	height: 600px;
+}
+
+#footer {
+	width: 1004px;
+	margin: 0 auto;
+	margin-top: 100px;
+	margin-bottom: 300px;
+}
+
+.footer-content {
+	display: block;
+	margin-bottom: 10px;
+}
+
+#swm-logo {
+	width: 100px;
+	height: 50px;
+}
+
+#mirae-logo {
+	width: 100px;
+}
+
+#nipa-logo {
+	width: 110px;
+}
+
+#fkii-logo {
+	width: 130px;
+}
+
+#iitp-logo {
+	width: 130px;
+}
+
+.sponsor-logo {
+	margin-right: 10px;
+}
+
+#pin-content {
+	text-align: left;
+	width: 450px;
+}
+
+#pin-logo {
+	max-width: 100px;
+	float: left;
+	margin-top: 15px;
+}
+
+#pin-info {
+	font-size: 120%;
+}
+
+#pin-body {
+	float: right;
 }
