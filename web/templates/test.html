@@ -13,7 +13,7 @@
 	</head>
 	<body>
     <div id="landing-page">
-      <nav class="navbar navbar-default navbar-fixed-top">
+      <nav id="full-navbar" class="navbar navbar-default navbar-transparent navbar-fixed-top">
         <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
@@ -30,8 +30,18 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             
             <ul class="nav navbar-nav navbar-right">
-              <li><a href="#">Home</a></li>
-              <li><a href="#">Request</a></li>
+              <li>
+                <a href="#">
+                  <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+                  Request
+                </a>
+              </li>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -42,7 +52,7 @@
           <img src="/static/img/background.jpg" />
           <div class="container">
             <div class="content">
-              <h1>Spamaze</h1>
+              <h1 id="spsms">Spamaze</h1>
               <p class="lead">고통이 고통이라는 이유로 그 자체를 사랑하고 소유하려는 자는 없다.</p>
             </div>
           </div>
@@ -50,8 +60,6 @@
       </div>
 
       <div class="clear"></div>
-
-      <hr>
 
       <div id="product-contents">
         <!-- 어떤 문제를 해결하는가 -->
@@ -67,17 +75,17 @@
           <h1>서비스 특징</h1>
           <p class="lead subtitle">서비스 특징 설명</p>
           <div class="col-md-4">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            <h3>쉬운 사용성</h3>
+            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            <h3>Open API 제공</h3>
             <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕</p>
           </div>
           <div class="col-md-4">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
             <h3>높은 정확도</h3>
             <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕</p>
           </div>
           <div class="col-md-4">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
             <h3>경제성</h3>
             <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕</p>
           </div>
@@ -91,22 +99,22 @@
           <p class="lead subtitle">어디에 쓰이는지 알고싶은가? 알고싶으면 소마센터로 오라</p>
           <div class="first-row row">
             <div class="col-md-3">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
               <h3>커뮤니티</h3>
               <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거</p>
             </div>
             <div class="col-md-3">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
               <h3>쇼핑몰 상품 리뷰</h3>
               <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거</p>
             </div>
             <div class="col-md-3">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
               <h3>뉴스 & 미디어(코멘트)</h3>
               <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거</p>
             </div>
             <div class="col-md-3">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
               <h3>게임 악성 채팅 블락</h3>
               <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거</p>
             </div>
@@ -114,23 +122,23 @@
           
           <div class="second-row row">
             <div class="col-md-3">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
               <h3>모바일 채팅 서비스</h3>
               <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거</p>
             </div>
             <div class="col-md-3">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
               <h3>블로그 / SNS</h3>
               <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거</p>
             </div>
             <div class="col-md-3">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>
               <h3>서비스 내 고객상담</h3>
               <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거</p>
             </div>
             <div class="col-md-3">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-              <h3>거래 사기꾼 판</h3>
+              <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
+              <h3>거래 사기꾼 판별</h3>
               <p>사용성 설명이다 이것이 사용성 설명이야 이거야 이거라니까 이게 진짜야 우왕 사용성 설명이다 이것이 사용성 설명이야 이거</p>
             </div>
           </div>
@@ -143,7 +151,7 @@
           <h1>가격</h1>
           <p class="lead subtitle">우린 싸요</p>
           <div class="col-md-3">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-pawn" aria-hidden="true"></span>
             <h3>Free</h3>
             <ul class="list-unstyled">
               <li>무료다 무료</li>
@@ -152,7 +160,7 @@
             </ul>
           </div>
           <div class="col-md-3">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-knight" aria-hidden="true"></span>
             <h3>Tear 1</h3>
             <ul class="list-unstyled">
               <li>무료다 무료</li>
@@ -161,7 +169,7 @@
             </ul>
           </div>
           <div class="col-md-3">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-queen" aria-hidden="true"></span>
             <h3>Tear 2</h3>
             <ul class="list-unstyled">
               <li>무료다 무료</li>
@@ -170,7 +178,7 @@
             </ul>
           </div>
           <div class="col-md-3">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-king" aria-hidden="true"></span>
             <h3>Tear 3</h3>
             <ul class="list-unstyled">
               <li>무료다 무료</li>
@@ -187,21 +195,21 @@
           <h1>팀 소개</h1>
           <p class="lead subtitle">이런 사람들입니다</p>
           <div class="col-md-4">
-            <img src="/static/img/rjm.jpg" class="img-circle profile" />
+            <img src="/static/img/rjm.jpg" class="img-circle img-thumbnail profile" />
             <h3>유재명</h3>
             <ul class="list-unstyled">
               <p>무료다 무료 유료다 유료 무료다 무료 유료다 유료무료다 무료 유료다 유료 무료다 무료 유료다 유료 무료다 무료 유료다 유료 무료다 무료 유료다 유료 무료다 무료 유료다</p>
             </ul>
           </div>
           <div class="col-md-4">
-            <img src="/static/img/lmj_2.jpg" class="img-circle profile" />
+            <img src="/static/img/lmj_2.jpg" class="img-circle img-thumbnail profile" />
             <h3>이명준</h3>
             <ul class="list-unstyled">
               <p>무료다 무료 유료다 유료 무료다 무료 유료다 유료무료다 무료 유료다 유료 무료다 무료 유료다 유료 무료다 무료 유료다 유료 무료다 무료 유료다 유료 무료다 무료 유료다</p>
             </ul>
           </div>
           <div class="col-md-4">
-            <img src="/static/img/cdi.jpg" class="img-circle profile" />
+            <img src="/static/img/cdi.jpg" class="img-circle img-thumbnail profile" />
             <h3>최다인</h3>
             <ul class="list-unstyled">
               <p>무료다 무료 유료다 유료 무료다 무료 유료다 유료무료다 무료 유료다 유료 무료다 무료 유료다 유료 무료다 무료 유료다 유료 무료다 무료 유료다 유료 무료다 무료 유료다</p>
@@ -212,11 +220,32 @@
         <hr>
 
         <!-- Contact -->
-        <div id="contact" class="row">
-          <h1>Contact</h1>
+        <div id="address" class="row">
+          <h1>오시는 길</h1>
           <div id="map"></div>
         </div>
 
+        <hr>
+
+        <!-- Footer -->
+        <div id="footer" class="row">
+          <div id="sponsors" class="col-md-8">
+            <h5>Sponsors</h5>
+            <img src="/static/img/swmaestro.jpg" width=100/>
+            <img src="/static/img/mirae.jpg" width=110/>
+            <img src="/static/img/nipa.jpg" width=130/>
+            <img src="/static/img/fkii.png" width=150/>
+            <img src="/static/img/iitp.jpg" width=150/>
+          </div>
+          <div id="copyright" class="col-md-2">
+            <h5>Copyright</h5>
+            <p>Copyright Team MacLunch All Rights Reserved. </p>
+          </div>
+          <div id="contact" class="col-md-2">
+            <h5>Contact</h5>
+            <p></p>
+          </div>
+        </div>
       </div>
 
     </div>
