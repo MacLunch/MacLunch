@@ -10,18 +10,38 @@
         </style>
     </head>
     <body>
-		<h2>테스트용 글 올리기</h2>
+		<h2>스팸 여부 확인하기</h2>
 		<div class="form-group">
-			<form action="/query" method="post" id="query_form" name="query_form">
+			<form method="post" id="query_form" name="query_form">
 				<label>pk</label>
 				<input type="text" class="form-control" id="pk-input" name="pk" value="1">
 				
 				<label>text</label>
 				<input type="text" class="form-control" id="text-input" name="text" value="<p>ㅎㄷㄷ 사스가</p>">
-				
 				<br>
-				<button type="submit" class="btn btn-primary" id="submit">Submit</button>
+				<button type="submit" class="btn btn-primary" id="recog-submit">Submit</button>
 			</form>
 		</div>
+
+		<h2>스팸 글 등록</h2>
+		<div class="form-group">
+			<form method="post" id="query_form" name="query_form">
+				<label>pk</label>
+				<input type="text" class="form-control" id="pk-enroll" name="pk" value="1">
+				
+				<label>text</label>
+				<input type="text" class="form-control" id="text-enroll" name="text" value="<p>ㅎㄷㄷ 사스가</p>">
+
+				<label>label</label>
+				<input type="text" class="form-control" id="label-enroll" name="label" value="true">
+
+				<label>api key</label>
+				<input type="text" class="form-control" id="apikey-enroll" name="apikey" value="kwelk36l4kj2nkwj3lkj6ksd6q05">				
+				
+				<br>
+				<button type="submit" class="btn btn-primary" id="enroll-submit">Submit</button>
+			</form>
+		</div>
+
 	</body>
 </html>
