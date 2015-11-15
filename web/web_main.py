@@ -68,22 +68,22 @@ def send_enroll():
 	return jsonify(response)
 
 
-@app.route('/api/recognize', methods = ['POST'])
+@app.route('/api/recognize', methods = ['POST', 'GET'])
 def test():
-	data = request.data.decode('utf-8')
-	print(data)
-	#input_data = make_input(json.loads(data))
-	input_data = json.loads(data)
+	if request.method == 'POST':
+		data = request.data.decode('utf-8')
+		input_data = json.loads(data)
+	
+	api_key = request.args.get("api_key")
+	print(api_key)
 
 	modify_data = []
 	for item in input_data:
-		print(item)
 		temp_item = item
 		temp_item["pk"] = item["id"]
 		del temp_item["id"]
 		modify_data.append(temp_item)
 
-	print(modify_data)
 	result = predict_model.predict(modify_data)
 	
 	response = {}
@@ -97,4 +97,4 @@ def test():
 if __name__ == '__main__':
 	predict_model = Ilwar.TrollClassifier()
 	load_model()
-	app.run(host="0.0.0.0", port=80, debug=True)
+	app.run(debug=True)

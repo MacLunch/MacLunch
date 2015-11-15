@@ -5,11 +5,13 @@ function initButtonClick(){
 			text: $('#text-input').val(),
 		};
 		var json_list = [];
+		var url_with_key = "/api/recognize?api_key=" + $('#apikey-input').val();
+
 		json_list[0] = json_data;
 
 		$.ajax({
 			type: 'POST',
-			url: '/api/recognize',
+			url: url_with_key,
 			encoding: 'utf-8',
 			contentType: 'application/json; charset=UTF-8',
 			data: JSON.stringify(json_list),
