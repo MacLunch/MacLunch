@@ -97,39 +97,37 @@
 }
 
 
-#product-contents {
-	width: 1004px;
+.product-contents {
+	width: 100%;
 	margin: 0 auto;
 }
 
-#landing-page hr {
-	margin-top: 100px;
-	margin-bottom: 100px;
+.landing-page hr {
 }
 
-#landing-page #product-description {
+.landing-page #product-description {
 	text-align: center;
 	margin-top: 100px;
 }
 
-#landing-page #advantage {
+.landing-page #advantage {
 	text-align: center;
 }
 
-#landing-page #product-usage {
+.landing-page #product-usage {
 	text-align: center;
 }
 
-#landing-page #price {
+.landing-page #price {
 	text-align: center;
 }
 
-#landing-page #team-desc {
+.landing-page #team-desc {
 	text-align: center;
 	margin-bottom: 100px;
 }
 
-#landing-page #address {
+.landing-page #address {
 	text-align: center;
 }
 
@@ -142,6 +140,10 @@
 	margin-bottom: 20px;
 }
 
+.row {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
 
 .row h1 {
 	margin-top: 30px;
@@ -164,6 +166,16 @@
 
 .row .profile {
 	width: 120px;
+}
+
+.part-content {
+	width: 1004px;
+	margin: 0 auto;	
+}
+
+.row-reverse {
+	background-color: #012f3f;
+	color: white;
 }
 
 
