@@ -107,11 +107,11 @@
 }
 
 .landing-page hr {
+	margin-top: 200px;
 }
 
 .landing-page #product-description {
 	text-align: center;
-	margin-top: 100px;
 }
 
 .landing-page #advantage {
@@ -140,8 +140,7 @@
 }
 
 .concept-image {
-	margin-top: 20px;
-	margin-bottom: 20px;
+	margin: 50px 0;
 }
 
 .row {
@@ -156,8 +155,20 @@
 
 .row p.subtitle {
 	margin-bottom: 80px;
+	text-align: center;
 }
 
+.row p {
+	text-align: justify;
+	/*margin-left: -4px;
+	margin-right: -4px;*/
+	width: 100%;
+}
+
+
+.reduce-padding {
+	padding: 10px !important;
+}
 
 .row .glyphicon {
 	font-size: 400%;
@@ -182,7 +193,6 @@
 	color: white;
 }
 
-
 #space {
 	display: block;
 	margin-bottom: 50px;
@@ -205,8 +215,8 @@
 #footer {
 	width: 1004px;
 	margin: 0 auto;
-	margin-top: 100px;
-	margin-bottom: 300px;
+	padding-top: 0px;
+	margin-bottom: 100px;
 }
 
 .footer-content {
@@ -270,4 +280,13 @@
 #success-modal .modal-body span.glyphicon {
 	font-size: 300%;
 	margin: 30px 0;
+}
+
+#price dt {
+  width: 100px;
+}
+
+#price dd {
+  margin-left: 120px;
+  text-align: left;
 }
