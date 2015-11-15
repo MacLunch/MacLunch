@@ -253,3 +253,17 @@
 #pin-body {
 	float: right;
 }
+
+.request-form-group {
+	width: 100%;
+}
+
+
+#success-modal .modal-body {
+	text-align: center;
+}
+
+#success-modal .modal-body span.glyphicon {
+	font-size: 300%;
+	margin: 30px 0;
+}

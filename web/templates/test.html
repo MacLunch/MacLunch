@@ -10,6 +10,7 @@
         <script src="/static/js/googlemap.js"></script>-->
         <script src="http://maps.googleapis.com/maps/api/js"></script>
         <script src="/static/js/home.js"></script>
+        <script src="/static/js/request.js"></script>
 	</head>
 	<body>
     <div class="landing-page">
@@ -33,13 +34,22 @@
               <li>
                 <a href="#">
                   <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-                  Home
+                  홈
                 </a>
               </li>
               <li>
-                <a href="#">
+                <a href="#request-modal" data-toggle="modal">
+
+
+                <!--
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                  Launch demo modal
+                </button>
+                -->
+
+                
                   <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-                  Request
+                  문의하기
                 </a>
               </li>
             </ul>
@@ -266,5 +276,55 @@
         </div>
       </div>
     </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="request-modal" tabindex="-1" role="dialog" aria-labelledby="modal-label">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="modal-label">문의하기</h4>
+          </div>
+          <div class="modal-body">
+            <div class="request-form-group form-group">
+              <label for="user-message">이메일</label>
+              <input class="form-control" id="email-address" type="email" placeholder="example@spamaze.com"></input>
+            </div>
+
+            <div class="request-form-group form-group">
+              <label for="user-message">메시지</label>
+              <textarea class="form-control" rows="5" id="message"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+            <button type="button" id="request-btn" class="btn btn-primary">보내기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="modal-label">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">감사합니다</h4>
+          </div>
+          <div class="modal-body">
+            <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+            <p>더욱 발전하는 Spamaze가 될 수 있도록 노력하겠습니다.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 	</body>
 </html>

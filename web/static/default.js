@@ -11,7 +11,7 @@ function initButtonClick(){
 
 		$.ajax({
 			type:'POST',
-			url:'/query',
+			url:'/api/recognize',
 			encoding:'utf-8',
 			contentType:'application/json; charset=UTF-8',
 			data: JSON.stringify(json_data),

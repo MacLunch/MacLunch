@@ -8,6 +8,8 @@ from flask import request
 from flask import Flask
 from flask import jsonify
 
+from spamaze_db import DbControl
+
 app = Flask(__name__)
 
 def load_model():
@@ -24,7 +26,46 @@ def test_():
 def home():
 	return render_template("index.html")
 
-@app.route('/api/query', methods = ['POST'])
+
+@app.route('/request', methods = ['POST'])
+def send_request():
+	data = request.data.decode('utf-8')
+	data = json.loads(data)
+
+	print(data)
+	
+	email = data["email"]
+	text = data["message"]
+
+	target_data = ["\"%s\"" % (email), "\"%s\"" % (text)]
+	columns = ['email', 'text']
+	
+	dbcon = DbControl("spamaze")
+	dbcon.insert_data('requests', columns, target_data)
+
+	response = {'status' : 'ok'}
+	return jsonify(response)
+
+
+# @app.route('/api/enroll', methods = ['POST'])
+# def send_request():
+# 	data = request.data.decode('utf-8')
+# 	data = json.loads(data)
+	
+# 	email = data["email"]
+# 	text = data["message"]
+
+# 	target_data = ["\"%s\"" % (email), "\"%s\"" % (text)]
+# 	columns = ['email', 'text']
+	
+# 	dbcon = DbControl("spamaze")
+# 	dbcon.insert_data('requests', columns, target_data)
+
+# 	response = {'status' : 'ok'}
+# 	return jsonify(response)
+
+
+@app.route('/api/recognize', methods = ['POST'])
 def test():
 	data = request.data.decode('utf-8')
 	input_data = make_input(json.loads(data))
