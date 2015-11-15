@@ -16,9 +16,6 @@ dbcon = DbControl("spamaze")
 def load_model():
 	predict_model.load_model(save_path = "../predict_model/")
 
-#def make_input(data):
-#	return [data]
-
 @app.route('/')
 def test_():
 	return render_template("test.html")
@@ -87,12 +84,14 @@ def test():
 		modify_data.append(temp_item)
 
 	print(modify_data)
-	result = predict_model.predict(input_data)
+	result = predict_model.predict(modify_data)
 	
 	response = {}
-	for i in range(0, len(input_data)):
-		response[str(input_data[i]["pk"])] = bool(result[i])
+	for i in range(0, len(modify_data)):
+		response[str(modify_data[i]["pk"])] = bool(result[i])
 
+	print(response)
+	
 	return jsonify(response)
 
 if __name__ == '__main__':

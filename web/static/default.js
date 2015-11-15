@@ -8,16 +8,14 @@ function initButtonClick(){
 		json_list[0] = json_data;
 
 		$.ajax({
-			type:'POST',
-			url:'/api/recognize',
-			encoding:'utf-8',
-			contentType:'application/json; charset=UTF-8',
+			type: 'POST',
+			url: '/api/recognize',
+			encoding: 'utf-8',
+			contentType: 'application/json; charset=UTF-8',
 			data: JSON.stringify(json_list),
 			dataType: "json",
-			success:function(dataFromServer){
-				console.log("success");
-				var is_troll = dataFromServer;
-				console.log(is_troll);
+			success: function(response){
+				console.log(response);
 			}
 		});
 		return false;
