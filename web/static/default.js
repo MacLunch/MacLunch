@@ -28,22 +28,23 @@ function initButtonClick(){
 			id: $('#pk-enroll').val(),
 			text: $('#text-enroll').val(),
 			is_spam: $('#label-enroll').val(),
-			api_key: $('#apikey-enroll').val()
 		};
-		var json_list = [];
-		json_list[0] = json_data;
+		var data = [];
+		var api_key = $('#apikey-enroll').val();
+		data[0] = json_data;
 
-		$.ajax({
-			type:'POST',
-			url:'/api/enroll',
-			encoding:'utf-8',
-			contentType:'application/json; charset=UTF-8',
-			data: JSON.stringify(json_list),
+        $.ajax({
+			type: 'POST',
+			url: '/api/enroll?api_key=' + api_key,
+			encoding: 'utf-8',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify(data),
 			dataType: "json",
-			success:function(dataFromServer){
-				console.log("success");
+			success: function(response){
+				console.log(response);
 			}
 		});
+
 		return false;
 	});
 }

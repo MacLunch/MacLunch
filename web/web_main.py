@@ -44,18 +44,17 @@ def send_request():
 	return jsonify(response)
 
 
-@app.route('/api/enroll', methods = ['POST'])
+@app.route('/api/enroll', methods = ['POST', 'GET'])
 def send_enroll():
-	data = request.data.decode('utf-8')
-	print(data)
-	data = json.loads(data)
-	print(data)
+	if request.method == 'POST':
+		data = request.data.decode('utf-8')
+		data = json.loads(data)
+	api_key = request.args.get("api_key")
 	
 	for item in data:
 		content_id = item["id"]
 		text = item["text"]
 		is_spam = item["is_spam"]
-		api_key = item["api_key"]
 
 		target_data = ["\"%s\"" % (content_id), "\"%s\"" % (text), \
 						"\"%s\"" % (is_spam), "\"%s\"" % (api_key)]
