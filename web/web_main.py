@@ -12,7 +12,7 @@ from flask import jsonify
 from spamaze_db import DbControl
 
 logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(levelname)s %(message)s',
+                    format='%(asctime)s - %(levelname)s - %(message)s',
 					 filename='web_log.log', filemode='w')
 
 app = Flask(__name__)
@@ -50,7 +50,7 @@ def send_request():
 	return jsonify(response)
 
 
-@app.route('/api/enroll', methods = ['POST', 'GET'])
+@app.route('/api/enroll', methods = ['GET', 'POST'])
 def send_enroll():
 	if request.method == 'POST':
 		data = request.data.decode('utf-8')
@@ -77,7 +77,7 @@ def send_enroll():
 	return jsonify(response)
 
 
-@app.route('/api/recognize', methods = ['POST', 'GET'])
+@app.route('/api/recognize', methods = ['GET', 'POST'])
 def test():
 	if request.method == 'POST':
 		data = request.data.decode('utf-8')
