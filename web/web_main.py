@@ -1,5 +1,6 @@
 import sys
 import json
+import logging
 sys.path.append('../class/')
 
 import Ilwar
@@ -9,6 +10,10 @@ from flask import Flask
 from flask import jsonify
 
 from spamaze_db import DbControl
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)s %(message)s',
+					 filename='web_log.log', filemode='w')
 
 app = Flask(__name__)
 dbcon = DbControl("spamaze")
@@ -30,7 +35,7 @@ def send_request():
 	data = request.data.decode('utf-8')
 	data = json.loads(data)
 
-	print(data)
+	logging.info("[REQUEST] : %s" % str(data))
 	
 	email = data["email"]
 	text = data["message"]
@@ -41,6 +46,7 @@ def send_request():
 	dbcon.insert_data('requests', columns, target_data)
 
 	response = {'status' : 'ok'}
+	logging.info("[RESPONSE] : %s" % str(response))
 	return jsonify(response)
 
 
@@ -50,6 +56,9 @@ def send_enroll():
 		data = request.data.decode('utf-8')
 		data = json.loads(data)
 	api_key = request.args.get("api_key")
+	logging.info("[APINAME] : enroll")
+	logging.info("[APIKEY ] : %s" % str(api_key))
+	logging.info("[DATA   ] : %s" % str(data))
 	
 	for item in data:
 		content_id = item["id"]
@@ -64,6 +73,7 @@ def send_enroll():
 		dbcon.insert_data('enrolls', columns, target_data)
 
 	response = {'status' : 'ok'}
+	logging.info("[RESP   ] : %s" % str(response))
 	return jsonify(response)
 
 
@@ -73,8 +83,9 @@ def test():
 		data = request.data.decode('utf-8')
 		input_data = json.loads(data)
 	
+	logging.info("[APINAME] : recognize")
 	api_key = request.args.get("api_key")
-	print(api_key)
+	logging.info("[APIKEY ] : %s" % str(api_key))
 
 	modify_data = []
 	for item in input_data:
@@ -84,16 +95,17 @@ def test():
 		modify_data.append(temp_item)
 
 	result = predict_model.predict(modify_data)
+	logging.info("[DATA   ] : %s" % modify_data)
 	
 	response = {}
 	for i in range(0, len(modify_data)):
 		response[str(modify_data[i]["pk"])] = bool(result[i])
 
-	print(response)
+	logging.info("[RESP   ] : %s" % str(response))
 	
 	return jsonify(response)
 
 if __name__ == '__main__':
 	predict_model = Ilwar.TrollClassifier()
 	load_model()
-	app.run(debug=True)
+	app.run(host="0.0.0.0", port=80, debug=True, threaded=True)
