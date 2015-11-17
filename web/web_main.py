@@ -22,11 +22,11 @@ def load_model():
 	predict_model.load_model(save_path = "../predict_model/")
 
 @app.route('/')
-def test_():
+def home():
 	return render_template("test.html")
 
 @app.route('/test')
-def home():
+def go_test():
 	return render_template("index.html")
 
 
@@ -47,6 +47,7 @@ def send_request():
 
 	response = {'status' : 'ok'}
 	logging.info("[RESPONSE] : %s" % str(response))
+	
 	return jsonify(response)
 
 
@@ -55,6 +56,7 @@ def send_enroll():
 	if request.method == 'POST':
 		data = request.data.decode('utf-8')
 		data = json.loads(data)
+	
 	api_key = request.args.get("api_key")
 	logging.info("[APINAME] : enroll")
 	logging.info("[APIKEY ] : %s" % str(api_key))
@@ -74,11 +76,12 @@ def send_enroll():
 
 	response = {'status' : 'ok'}
 	logging.info("[RESP   ] : %s" % str(response))
+	
 	return jsonify(response)
 
 
 @app.route('/api/recognize', methods = ['GET', 'POST'])
-def test():
+def recognize():
 	if request.method == 'POST':
 		data = request.data.decode('utf-8')
 		input_data = json.loads(data)
