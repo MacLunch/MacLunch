@@ -29,7 +29,6 @@ def home():
 def go_test():
 	return render_template("index.html")
 
-
 @app.route('/request', methods = ['POST'])
 def send_request():
 	data = request.data.decode('utf-8')
